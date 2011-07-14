@@ -1,0 +1,137 @@
+<html>
+<head>
+<style type="text/css">
+table.sample
+{
+    border-width: 5px;
+    border-spacing: 0px;
+    border-style: solid;
+    border-color: gray;
+    border-collapse: collapse;
+    background-color: rgb(176, 176, 176);
+    width: 100%;
+}
+table.mail
+{
+    border-width: 5px;
+    border-spacing: 2px;
+    border-style: solid;
+    border-color: gray;
+    background-color: rgb(176, 176, 176);
+    width: 100%;
+}
+body.sample
+{
+    background-color: rgb(176, 176, 176);
+    font-family: 'verdana';
+}
+input.sample
+{
+    background-color: rgb(176, 176, 176);
+    border-color: gray;
+    width: 100%;
+}
+textarea.sample
+{
+    background-color: rgb(176, 176, 176);
+    width: 100%;
+    border: 0px;
+    resize: none;
+}
+textarea.mail
+{
+    background-color: rgb(200, 200, 200);
+    width: 100%;
+    border: 0px;
+    resize: none;
+}
+input.button
+{
+    background-color: rgb(200, 200, 200);
+}
+</style>
+<body class="sample">
+<script type="text/javascript">
+//{{{1 Client JavaScript
+var id = "";
+var ud = "";
+var req = new XMLHttpRequest();
+this.setInterval(function()
+        {
+            if (ud!="")
+            {
+                sendData('attbeat', 'nice');
+            }
+            else if (id!="")
+            {
+                sendData('heartbeat', 'nice');
+                ud = "";
+            }
+        }, 500);
+
+function processHandler()
+{ 
+    if (req.readyState == 4)
+    {
+        if (req.status == 200)
+        {
+            var response = req.responseText;
+            arr = response.split("@D@");
+            switch(arr[0])
+            {
+                case 'ATT':
+                    document.form1.irc.value += "trying to connect\n";
+                    ud = arr[1];
+                    break;
+                case 'CON':
+                    document.form1.irc.value += "connected\n";
+                    id = arr[1];
+                    ud = "";
+                    break;
+                case 'DIS':
+                    document.form1.irc.value = "disconnected\n";
+                    break;
+                case 'HB':
+                    document.form1.irc.value += arr[1];
+                    break;
+                case 'MSG':
+                    document.form1.irc.value += arr[1];
+                    break;
+            }
+    
+        }
+    }
+}
+function sendData(command, value)
+{
+    req.onreadystatechange = processHandler;
+    state = '';
+    if (ud!='')
+    {
+        state = command + "@D@" + ud + "@D@" + escape(value);
+    }
+    else
+    {
+        state = command + "@D@" + id + "@D@" + escape(value);
+    }
+    req.open("POST", "./"+state, true);
+    req.send();
+}
+//1}}}
+</script>
+<h2 align="center">TEST</h2>
+<form name=form1>
+    Chat test
+    <table class = "sample"><tr>
+            <td><textarea readonly="true" class="sample" rows=15 name=irc></textarea></td>
+    </tr></table>
+    <input type=text name=irc_m class="sample" value="Enter your nick here and press [Connect]">
+    <input type=button class="button" onclick="sendData('sendmsg', irc_m.value);" value="Send">
+    <input type=button class="button" onclick="sendData('connect', irc_m.value);" value="Connect">
+    <br>
+    <hr hoshade></hr>
+</form>
+
+</body>
+</head>
+</html>

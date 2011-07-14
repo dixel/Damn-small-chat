@@ -9,7 +9,7 @@ var connectionListener = function (sock)
 {
     var dataListener = function (data)
     {
-        if (data.search('WANNAID') == 0)
+        if (data == 'WANNAID:001')
         {
             id++;
             sock.write('GNICK:'+id, 'utf8');
@@ -19,7 +19,8 @@ var connectionListener = function (sock)
         }
         else
         {
-            mess = data.split(":");
+            mess = data.split(":DELIMITER:");
+            console.log(mess);
             if (!nicks[mess[0]])
             {
                 nicks[mess[0]] = mess[1];
@@ -36,20 +37,15 @@ var connectionListener = function (sock)
     }
     sock.setEncoding('utf8');
     sock.addListener('data', dataListener);
-    sock.addListener('error', function(){
-            for (var i in socks)
-            {
-                if (socks[i] == sock)
-                    delete socks[i];
-                    delete nicks[i];
-            }
-            });
     sock.addListener('close', function(){
             for (var i in socks)
             {
                 if (socks[i] == sock)
+                {
+                    console.log(nicks[i]+" disconnected");
                     delete socks[i];
                     delete nicks[i];
+                }
             }
             });
 };

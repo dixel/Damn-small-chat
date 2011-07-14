@@ -8,7 +8,7 @@ var nick = '';
 sock.setEncoding('utf8');
 var connected = function ()
 {
-    sock.write("WANNAID", "utf8");
+    sock.write("WANNAID:001", "utf8");
     sock.addListener('data', clane);
 }
 var clane = function (data)
@@ -25,6 +25,6 @@ var clane = function (data)
 process.stdin.setEncoding('utf8');
 process.stdin.on('data', function(data)
         {
-            sock.write(id+":"+data);
+            sock.write(id+":DELIMITER:"+data);
         });
-sock.connect(8124, connected);
+sock.connect(8124, 'localhost', connected);
