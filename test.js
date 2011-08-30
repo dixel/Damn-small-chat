@@ -99,14 +99,14 @@ Server = http.createServer(function(req, res) {
         {
             case('/connect'):
                 console.log("connect");
-                nick = req.url.split("@D@")[2];
+                nick = decodeURI(req.url.split("@D@")[2]);
                 srvev.emit('connect', nick, id, res);
                 break;
 /*            case('/disconnect'):
                 srvev.emit('disconnect', id, res);
                 break;*/
             case('/sendmsg'):
-                msg = unescape(req.url.split('@D@')[2]);
+                msg = decodeURI(req.url.split('@D@')[2]);
                 srvev.emit('sendmsg', id, msg, res);
                 break;
             case('/heartbeat'):

@@ -108,11 +108,11 @@ function sendData(command, value)
     state = '';
     if (ud!='')
     {
-        state = command + "@D@" + ud + "@D@" + escape(value);
+        state = command + "@D@" + ud + "@D@" + encodeURI(value);
     }
     else
     {
-        state = command + "@D@" + id + "@D@" + escape(value);
+        state = command + "@D@" + id + "@D@" + encodeURI(value);
     }
     req.open("POST", "./"+state, true);
     req.send();
